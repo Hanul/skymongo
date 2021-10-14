@@ -43,14 +43,12 @@ export default class DataStore<DT> {
     }
 
     public async idExists(_id: number | string): Promise<boolean> {
-        return await this.collection.findOne({ _id }) !== null;
+        return await this.collection.findOne({ _id }) !== undefined;
     }
 
     public async get(_id: number | string): Promise<(DT & DbData) | undefined> {
         const data: any = await this.collection.findOne({ _id });
-        if (data === null) {
-            return undefined;
-        } else {
+        if (data !== undefined) {
             data.id = data._id instanceof ObjectId ? data._id.toHexString() : data._id;
             delete data._id;
             return data;
