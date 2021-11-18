@@ -7,5 +7,8 @@ export default class DataStore<DT> {
     idExists(_id: number | string): Promise<boolean>;
     get(_id: number | string): Promise<(DT & DbData) | undefined>;
     set(_id: number | string, data: DT): Promise<void>;
+    createIndex(index: any): Promise<void>;
+    deleteIndex(index: any): Promise<void>;
+    getIndexes(): Promise<any[]>;
 }
 //# sourceMappingURL=DataStore.d.ts.map

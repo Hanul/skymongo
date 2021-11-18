@@ -43,12 +43,14 @@ export default class DataStore<DT> {
     }
 
     public async idExists(_id: number | string): Promise<boolean> {
-        return await this.collection.findOne({ _id }) !== undefined;
+        return await this.collection.findOne({ _id }) !== null;
     }
 
     public async get(_id: number | string): Promise<(DT & DbData) | undefined> {
         const data: any = await this.collection.findOne({ _id });
-        if (data !== undefined) {
+        if (data === null) {
+            return undefined;
+        } else {
             data.id = data._id instanceof ObjectId ? data._id.toHexString() : data._id;
             delete data._id;
             return data;
@@ -65,5 +67,26 @@ export default class DataStore<DT> {
             cleaned.updateTime = Date.now();
             await this.collection.updateOne({ _id }, this.updateOrders(cleaned));
         }
+    }
+
+    public async createIndex(index: any) {
+        await this.collection.createIndex(index);
+    }
+
+    public async deleteIndex(index: any) {
+        await this.collection.dropIndex(index);
+    }
+
+    public async getIndexes() {
+        const indexInfo = await this.collection.indexInformation();
+        const indexes = [];
+        for (const [, pairs] of Object.entries(indexInfo)) {
+            const index: any = {};
+            (pairs as any[]).forEach((pair: any[]) => {
+                index[pair[0]] = pair[1];
+            });
+            indexes.push(index);
+        }
+        return indexes;
     }
 }
