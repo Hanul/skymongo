@@ -1,2 +1,2 @@
 export { default as SkyMongo } from "./SkyMongo";
-export { default as DataCollection } from "./DataStore";
+export { default as DataStore } from "./DataStore";
